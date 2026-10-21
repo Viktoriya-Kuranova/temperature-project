@@ -55,6 +55,6 @@
 
 
 ## Сборка и запуск
-```bash
+```
 g++ -std=c++11 -Wall -Wextra -o temp_table temp1.cpp
 ./temp_table  или   temp_table.exe
