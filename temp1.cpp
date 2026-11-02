@@ -1,15 +1,14 @@
 #include <iostream>
 #include <fstream>
-using namespace std;
 
-class temperature{
+class Temperature{
 	
 	double temper;
 	char scale;
 	
 	public:
 	
-	temperature(double t=0.0, char s='C') : temper(t), scale(s) {}
+	Temperature(double t=0.0, char s='C') : temper(t), scale(s) {}
 	 void set(double t, char s)  { temper=t; scale=s; }
 	 
 	double toC() { 
@@ -20,7 +19,7 @@ class temperature{
 		}
 	
        void print()  {
-        cout<<"("<<temper<<", "<<scale<<")";
+        std::cout<<"("<<temper<<", "<<scale<<")";
     }
     
     double gettemper() { 
@@ -33,28 +32,28 @@ class temperature{
 	
 	};
 	
-	class table {
+	class Table {
 		
 		 int numstrok;
 		 int numstolb;
-		temperature** temp;
+		Temperature** temp;
 		
 		public:
-		table( int n = 0,  int k =0) : numstrok(n), numstolb(k), temp(nullptr)
+		Table( int n = 0,  int k =0) : numstrok(n), numstolb(k), temp(nullptr)
 		{ 
 			if(n > 0 && k > 0) {
 			
-				temp=new (nothrow) temperature*[n];
+				temp= new  Temperature*[n];
 				if(!temp)
 				{
-					cout<<"Ошибка выделения памяти"<<endl;
+					std::cout<<"Ошибка выделения памяти"<<std::endl;
 					return;
 					}
 				for(int i=0; i<n; i++)
 			{
-			  temp[i] = new (nothrow) temperature[k];
+			  temp[i] = new  Temperature[k];
 				  if (!temp[i]) {
-                cout << "Ошибка выделение памяти"<< endl;
+                std::cout << "Ошибка выделение памяти"<< std::endl;
                 for ( int j = 0; j < i; j++) {
                    delete[] temp[j];
 				     }
@@ -69,20 +68,20 @@ class temperature{
 			} 
 		}
 		
-		table(const table& other) ///konst kop
+		Table(const Table& other) ///konst kop
 		{ 
     numstrok = other.numstrok;
     numstolb = other.numstolb;
 
     if (numstrok > 0 && numstolb > 0) {
-        temp = new(nothrow) temperature*[numstrok];
+        temp = new Temperature*[numstrok];
         if(!temp){
-			cout << "Ошибка выделение памяти"<< endl;
+			std::cout << "Ошибка выделение памяти"<< std::endl;
 			}
         for ( int i = 0; i < numstrok; i++) {
-            temp[i] = new(nothrow) temperature[numstolb];
+            temp[i] = new Temperature[numstolb];
             if(!temp[i]){
-				cout << "Ошибка выделение памяти"<< endl;
+				std::cout << "Ошибка выделение памяти"<< std::endl;
 				}
             for ( int j = 0; j < numstolb; j++) {
                 temp[i][j] = other.temp[i][j]; 
@@ -93,7 +92,7 @@ class temperature{
             }
        }
        
-       table& operator=(const table& other) {
+       Table& operator=(const Table& other) {
     if (this == &other) return *this;
 
     if (temp) {
@@ -105,14 +104,14 @@ class temperature{
     numstolb = other.numstolb;
 
     if (numstrok && numstolb) {
-        temp = new(nothrow) temperature*[numstrok];
+        temp = new Temperature*[numstrok];
         if(!temp){
-			cout<<"Ошибка выделения памяти"<<endl;
+			std::cout<<"Ошибка выделения памяти"<<std::endl;
 			}
         for ( int i = 0; i < numstrok; i++) {
-            temp[i] = new(nothrow) temperature[numstolb];
+            temp[i] = new Temperature[numstolb];
             if(!temp[i]){
-				cout<<"Ошибка выделения памяти"<<endl;
+				std::cout<<"Ошибка выделения памяти"<<std::endl;
 				}
             for (int j = 0; j < numstolb; j++)
                 temp[i][j] = other.temp[i][j];
@@ -126,7 +125,7 @@ class temperature{
 	bool sredn(int strok, double* result) {
     
     if (strok >= numstrok || strok<0) {
-        cout << "Ошибка такой строки нет!"<< endl;
+        std::cout << "Ошибка такой строки нет!"<< std::endl;
         return false;
     }
 
@@ -143,7 +142,7 @@ class temperature{
     if (!minimum) return false;
     
     if (strok >= numstrok || strok<0) {
-        cout << "Ошибка неверный номер строки" << endl;
+        std::cout << "Ошибка неверный номер строки" << std::endl;
         return false;
     }
     double tmin= temp[strok][0].toC();
@@ -167,13 +166,13 @@ class temperature{
     *maximum = max;
     return true;
 }
-table operator+(const table& other) { ///peregruzka
+Table operator+(const Table& other) { ///peregruzka
     if (numstrok != other.numstrok || numstolb != other.numstolb) {
-        cout << "Ошибка таблицы разных размеров сложение невозможно!" << endl;
-        return table(); 
+        std::cout << "Ошибка таблицы разных размеров сложение невозможно!" << std::endl;
+        return Table(); 
     }
 
-    table result(numstrok, numstolb);
+    Table result(numstrok, numstolb);
 
     for ( int i = 0; i < numstrok; i++) {
         for ( int j = 0; j < numstolb; j++) {
@@ -199,7 +198,7 @@ table operator+(const table& other) { ///peregruzka
     return result;
 }
   
-		~table() {
+		~Table() {
 			
 			if(temp)
 			{
@@ -208,20 +207,20 @@ table operator+(const table& other) { ///peregruzka
 				delete[] temp;
 				}
 			}
-		 bool readFromFile(const string& filename) {
-        ifstream fin(filename);
+		 bool readFromFile(const std::string& filename) {
+        std::ifstream fin(filename);
         if (!fin.is_open()) {
-            cout << "Ошибка при открытии файла "  << endl;
+            std::cout << "Ошибка при открытии файла "  << std::endl;
             return false;
         }
         int tnumstrok,tnumstolb;
         if (!(fin >> tnumstrok >> tnumstolb)) {
-        cout << "Ошибка не удалось прочитать размеры таблицы"<<endl;
+        std::cout << "Ошибка не удалось прочитать размеры таблицы"<<std::endl;
         return false;
     }
         
         if (tnumstrok <= 0 || tnumstolb <= 0) {
-        cout << "Ошибка неверные размеры таблицы" << endl;
+        std::cout << "Ошибка неверные размеры таблицы" << std::endl;
         return false;
     }
     if (temp) {
@@ -233,15 +232,15 @@ table operator+(const table& other) { ///peregruzka
 
        numstrok = tnumstrok;
        numstolb = tnumstolb;
-        temp = new (nothrow) temperature*[numstrok];
+        temp = new Temperature*[numstrok];
           if (!temp) {
-        cout << "Ошибка выделения памяти" << endl;
+        std::cout << "Ошибка выделения памяти" << std::endl;
         return false;
     }
         for ( int i = 0; i < numstrok; i++){
-            temp[i] = new (nothrow) temperature[numstolb];
+            temp[i] = new Temperature[numstolb];
          if (!temp[i]) {
-           cout << "Ошибка выделения памяти " << endl;
+           std::cout << "Ошибка выделения памяти " << std::endl;
             temp = nullptr;
             numstolb=0;
             numstrok=0;
@@ -256,27 +255,27 @@ table operator+(const table& other) { ///peregruzka
 
             if (!(fin >> val >> sc)) {
                 if (fin.eof()) {
-                    cout << "Ошибка в файле меньше данных чем указано размерами таблицы!" << endl;
+                    std::cout << "Ошибка в файле меньше данных чем указано размерами таблицы!" << std::endl;
                 } else {
-                    cout << "Ошибка неверный формат данных в ячейке" << endl;
+                    std::cout << "Ошибка неверный формат данных в ячейке" << std::endl;
                 }
                 return false;
             }
             if (sc != 'C' && sc != 'K' && sc != 'F') {
-                cout << "Ошибка неизвестная шкала " << endl;
+                std::cout << "Ошибка неизвестная шкала " << std::endl;
                 return false;
             }
 
             if (sc == 'K' && val <= 0) {
-                cout << "Ошибка температура не имеет физического смысла" << endl;
+                std::cout << "Ошибка температура не имеет физического смысла" << std::endl;
                 return false;
             }
             if (sc == 'C' && val <=-273.15) {
-          cout << "Ошибка температура не имеет физического смысла"<<endl;
+          std::cout << "Ошибка температура не имеет физического смысла"<<std::endl;
     return false;
 }
        if (sc == 'F' && val <= -459.67) {
-    cout << "Ошибка температура не имеет физического смысла"<<endl;
+    std::cout << "Ошибка температура не имеет физического смысла"<<std::endl;
     return false;
                    }
             temp[i][j].set(val, sc);
@@ -285,7 +284,7 @@ table operator+(const table& other) { ///peregruzka
       double dopval;
        char   dopsc;
         if (fin >> dopval >> dopsc) {
-    cout << "Ошибка в файле больше данных чем указано размерами таблицы!" << endl;
+    std::cout << "Ошибка в файле больше данных чем указано размерами таблицы!" << std::endl;
     return false;
 }
         
@@ -299,9 +298,9 @@ table operator+(const table& other) { ///peregruzka
         for ( int i = 0; i < numstrok; i++) {
             for ( int j = 0; j < numstolb; j++) {
                 temp[i][j].print();
-                cout << " ";
+                std::cout << " ";
             }
-            cout << endl;
+            std::cout << std::endl;
         }
     }
     
@@ -312,49 +311,49 @@ int main ()
 { 
 
 int com=-1;
-table t1,t2,t3;
+Table t1,t2,t3;
  if (!t1.readFromFile("input1.txt") || !t2.readFromFile("input2.txt")) {
         exit(1);
     }
  int strok;
 while(com!=0)
-{ cout << "1 - Прочитать и вывести"<<endl
-	   << "2 - Средняя температура по строке"<<endl
-	   <<"3 - Минимальная температура по строке"<<endl
-	   <<"4 - Сумма двух таблиц"<<endl
-	   <<"5 - Максимальная температура для таблицы"<<endl
-	   <<"0 -  Выход из программы"<<endl;
-	   cin>>com;
+{ std::cout << "1 - Прочитать и вывести"<<std::endl
+	   << "2 - Средняя температура по строке"<<std::endl
+	   <<"3 - Минимальная температура по строке"<<std::endl
+	   <<"4 - Сумма двух таблиц"<<std::endl
+	   <<"5 - Максимальная температура для таблицы"<<std::endl
+	   <<"0 -  Выход из программы"<<std::endl;
+	   std::cin>>com;
 	switch(com)
 	{
 		case 1:
 		   if (!t1.readFromFile("input1.txt") || !t2.readFromFile("input2.txt")) {
                   exit(1);
                }
-                    cout << "\nТаблица 1:\n";
+                    std::cout << "\nТаблица 1:\n";
                     t1.print();
-                    cout << "\nТаблица 2:\n";
+                    std::cout << "\nТаблица 2:\n";
                     t2.print();
 		 break;
 		 
 		 case 2: {
-	 cout << "Введите номер строки: ";
-    cin >> strok;
+	 std::cout << "Введите номер строки: ";
+    std::cin >> strok;
 
     double sr; 
     if (t1.sredn(strok - 1, &sr)) {
-        cout << "Средняя температура: " << sr << " C" << endl;
+        std::cout << "Средняя температура: " << sr << " C" << std::endl;
     }
     break;
 }  
 		 
 		 case 3: {
-    cout << "Введите номер строки" << endl;
-    cin >> strok;
+    std::cout << "Введите номер строки" << std::endl;
+    std::cin >> strok;
     double minimum;
     if (t1.min_in_strok(strok - 1, &minimum)) {
-        cout << "Минимальная температура в " << strok
-             << " строке в Цельсиях : " << minimum << endl;
+        std::cout << "Минимальная температура в " << strok
+             << " строке в Цельсиях : " << minimum << std::endl;
     }
     break;
 }
@@ -362,22 +361,22 @@ while(com!=0)
 	 
 		 case 4:{
 		 t3=t1+t2;
-		 table summa(t3);
-		 cout<<"Результат суммы двух таблиц : "<<endl;
+		 Table summa(t3);
+		 std::cout<<"Результат суммы двух таблиц : "<<std::endl;
 		 t3.print();
 		 break;
 }
        case 5: {
     double maximum;
     if (t1.maxtable(&maximum)) {
-        cout << "Максимальная температура в таблице в Цельсиях  : " << maximum << endl;
+        std::cout << "Максимальная температура в таблице в Цельсиях  : " << maximum << std::endl;
     }
     break;
 }	 
 		 case 0:
 		 exit(0);
 		default:
-		 cout << "Такой команды нет в списке"<<endl;
+		 std::cout << "Такой команды нет в списке"<<std::endl;
 		 
 		}
 		
