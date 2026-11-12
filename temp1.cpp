@@ -8,29 +8,41 @@ class Temperature{
 	
 	public:
 	
-	Temperature(double t=0.0, char s='C') : temper(t), scale(s) {}
-	 void set(double t, char s)  { temper=t; scale=s; }
+	Temperature(double t=0.0, char s='C');
+	 void set(double t, char s);
 	 
-	double toC() { 
+	double toC();
+	
+       void print();
+    
+    double gettemper();
+		
+    char getscale();
+	
+	};
+	
+	Temperature::Temperature(double t, char s) : temper(t), scale(s) {}
+	
+	void Temperature::set(double t, char s)  { temper=t; scale=s; }
+	 
+	double Temperature::toC() { 
 		
 		if( scale == 'C' ) return temper ;
 		else if ( scale == 'K' ) return temper - 273.15;
 		return (temper - 32.0) / 1.8 ; //F
 		}
 	
-       void print()  {
+       void Temperature::print()  {
         std::cout<<"("<<temper<<", "<<scale<<")";
     }
     
-    double gettemper() { 
+    double Temperature::gettemper() { 
 		return temper; 
 		}
 		
-    char getscale() {
+    char Temperature::getscale() {
 		 return scale; 
 		 }
-	
-	};
 	
 	class Table {
 		
@@ -39,7 +51,20 @@ class Temperature{
 		Temperature** temp;
 		
 		public:
-		Table( int n = 0,  int k =0) : numstrok(n), numstolb(k), temp(nullptr)
+		Table( int n = 0,  int k =0);
+		Table(const Table& other);
+       Table& operator=(const Table& other);
+	bool sredn(int strok, double* result);
+		bool min_in_strok( int strok, double* minimum);
+  bool maxtable(double* maximum);
+Table operator+(const Table& other);
+		~Table();
+		 bool readFromFile(const std::string& filename);
+	  void print();
+    
+	};
+	
+		Table::Table( int n,  int k) : numstrok(n), numstolb(k), temp(nullptr)
 		{ 
 			if(n > 0 && k > 0) {
 			
@@ -68,7 +93,7 @@ class Temperature{
 			} 
 		}
 		
-		Table(const Table& other) ///konst kop
+		Table::Table(const Table& other) ///konst kop
 		{ 
     numstrok = other.numstrok;
     numstolb = other.numstolb;
@@ -92,7 +117,7 @@ class Temperature{
             }
        }
        
-       Table& operator=(const Table& other) {
+       Table& Table::operator=(const Table& other) {
     if (this == &other) return *this;
 
     if (temp) {
@@ -122,7 +147,7 @@ class Temperature{
     return *this;
 }
 
-	bool sredn(int strok, double* result) {
+	bool Table::sredn(int strok, double* result) {
     
     if (strok >= numstrok || strok<0) {
         std::cout << "Ошибка такой строки нет!"<< std::endl;
@@ -138,7 +163,7 @@ class Temperature{
 }
 
 		
-		bool min_in_strok( int strok, double* minimum) { 
+		bool Table::min_in_strok( int strok, double* minimum) { 
     if (!minimum) return false;
     
     if (strok >= numstrok || strok<0) {
@@ -154,7 +179,7 @@ class Temperature{
     return true;
 }
   
-  bool maxtable(double* maximum) {  
+  bool Table::maxtable(double* maximum) {  
     if (!maximum) return false;
     double max = temp[0][0].toC();
     for ( int i = 0; i < numstrok; i++) {
@@ -166,7 +191,7 @@ class Temperature{
     *maximum = max;
     return true;
 }
-Table operator+(const Table& other) { ///peregruzka
+Table Table::operator+(const Table& other) { ///peregruzka
     if (numstrok != other.numstrok || numstolb != other.numstolb) {
         std::cout << "Ошибка таблицы разных размеров сложение невозможно!" << std::endl;
         return Table(); 
@@ -198,7 +223,7 @@ Table operator+(const Table& other) { ///peregruzka
     return result;
 }
   
-		~Table() {
+		Table::~Table() {
 			
 			if(temp)
 			{
@@ -207,7 +232,7 @@ Table operator+(const Table& other) { ///peregruzka
 				delete[] temp;
 				}
 			}
-		 bool readFromFile(const std::string& filename) {
+		 bool Table::readFromFile(const std::string& filename) {
         std::ifstream fin(filename);
         if (!fin.is_open()) {
             std::cout << "Ошибка при открытии файла "  << std::endl;
@@ -294,7 +319,7 @@ Table operator+(const Table& other) { ///peregruzka
   
 	  
 	 
-	  void print()  {
+	  void Table::print()  {
         for ( int i = 0; i < numstrok; i++) {
             for ( int j = 0; j < numstolb; j++) {
                 temp[i][j].print();
@@ -304,7 +329,6 @@ Table operator+(const Table& other) { ///peregruzka
         }
     }
     
-	};
 	
 
 int main ()
@@ -384,4 +408,3 @@ while(com!=0)
 
 return 0;
 }
-
