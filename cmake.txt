@@ -1,0 +1,9 @@
+cmake_minimum_required(VERSION 3.10)
+project(oc26)
+
+set(CMAKE_CXX_STANDARD 17)
+
+find_package(Boost REQUIRED COMPONENTS program_options)
+
+add_executable(oc26 main.cpp temperature.cpp table.cpp)
+target_link_libraries(oc26 PRIVATE Boost::program_options)
