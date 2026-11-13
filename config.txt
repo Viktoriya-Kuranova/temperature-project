@@ -1,0 +1,2 @@
+input1 = input1.txt
+input2 = input2.txt
