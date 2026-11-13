@@ -2,11 +2,12 @@
 #include <iostream>
 #include <fstream>
 
-		Table::Table( int n,  int k) : numstrok(n), numstolb(k), temp(nullptr)
+		template <typename T>
+		Table<T>::Table( int n,  int k) : numstrok(n), numstolb(k), temp(nullptr)
 		{ 
 			if(n > 0 && k > 0) {
 			
-				temp= new  Temperature*[n];
+				temp= new  T*[n];
 				if(!temp)
 				{
 					std::cout<<"Ошибка выделения памяти"<<std::endl;
@@ -14,7 +15,7 @@
 					}
 				for(int i=0; i<n; i++)
 			{
-			  temp[i] = new  Temperature[k];
+			  temp[i] = new  T[k];
 				  if (!temp[i]) {
                 std::cout << "Ошибка выделение памяти"<< std::endl;
                 for ( int j = 0; j < i; j++) {
@@ -31,18 +32,19 @@
 			} 
 		}
 		
-		Table::Table(const Table& other) ///konst kop
+		template <typename T>
+		Table<T>::Table(const Table<T>& other) ///konst kop
 		{ 
     numstrok = other.numstrok;
     numstolb = other.numstolb;
 
     if (numstrok > 0 && numstolb > 0) {
-        temp = new Temperature*[numstrok];
+        temp = new T*[numstrok];
         if(!temp){
 			std::cout << "Ошибка выделение памяти"<< std::endl;
 			}
         for ( int i = 0; i < numstrok; i++) {
-            temp[i] = new Temperature[numstolb];
+            temp[i] = new T[numstolb];
             if(!temp[i]){
 				std::cout << "Ошибка выделение памяти"<< std::endl;
 				}
@@ -55,7 +57,8 @@
             }
        }
        
-       Table& Table::operator=(const Table& other) {
+       template <typename T>
+       Table<T>& Table<T>::operator=(const Table<T>& other) {
     if (this == &other) return *this;
 
     if (temp) {
@@ -67,12 +70,12 @@
     numstolb = other.numstolb;
 
     if (numstrok && numstolb) {
-        temp = new Temperature*[numstrok];
+        temp = new T*[numstrok];
         if(!temp){
 			std::cout<<"Ошибка выделения памяти"<<std::endl;
 			}
         for ( int i = 0; i < numstrok; i++) {
-            temp[i] = new Temperature[numstolb];
+            temp[i] = new T[numstolb];
             if(!temp[i]){
 				std::cout<<"Ошибка выделения памяти"<<std::endl;
 				}
@@ -85,7 +88,8 @@
     return *this;
 }
 
-	bool Table::sredn(int strok, double* result) {
+	template <typename T>
+	bool Table<T>::sredn(int strok, double* result) {
     
     if (strok >= numstrok || strok<0) {
         std::cout << "Ошибка такой строки нет!"<< std::endl;
@@ -101,7 +105,8 @@
 }
 
 		
-		bool Table::min_in_strok( int strok, double* minimum) { 
+		template <typename T>
+		bool Table<T>::min_in_strok( int strok, double* minimum) { 
     if (!minimum) return false;
     
     if (strok >= numstrok || strok<0) {
@@ -117,7 +122,8 @@
     return true;
 }
   
-  bool Table::maxtable(double* maximum) {  
+  template <typename T>
+  bool Table<T>::maxtable(double* maximum) {  
     if (!maximum) return false;
     double max = temp[0][0].toC();
     for ( int i = 0; i < numstrok; i++) {
@@ -129,13 +135,15 @@
     *maximum = max;
     return true;
 }
-Table Table::operator+(const Table& other) { ///peregruzka
+
+template <typename T>
+Table<T> Table<T>::operator+(const Table<T>& other) { ///peregruzka
     if (numstrok != other.numstrok || numstolb != other.numstolb) {
         std::cout << "Ошибка таблицы разных размеров сложение невозможно!" << std::endl;
-        return Table(); 
+        return Table<T>(); 
     }
 
-    Table result(numstrok, numstolb);
+    Table<T> result(numstrok, numstolb);
 
     for ( int i = 0; i < numstrok; i++) {
         for ( int j = 0; j < numstolb; j++) {
@@ -161,7 +169,8 @@ Table Table::operator+(const Table& other) { ///peregruzka
     return result;
 }
   
-		Table::~Table() {
+		template <typename T>
+		Table<T>::~Table() {
 			
 			if(temp)
 			{
@@ -170,7 +179,9 @@ Table Table::operator+(const Table& other) { ///peregruzka
 				delete[] temp;
 				}
 			}
-		 bool Table::readFromFile(const std::string& filename) {
+
+		 template <typename T>
+		 bool Table<T>::readFromFile(const std::string& filename) {
         std::ifstream fin(filename);
         if (!fin.is_open()) {
             std::cout << "Ошибка при открытии файла "  << std::endl;
@@ -195,13 +206,13 @@ Table Table::operator+(const Table& other) { ///peregruzka
 
        numstrok = tnumstrok;
        numstolb = tnumstolb;
-        temp = new Temperature*[numstrok];
+        temp = new T*[numstrok];
           if (!temp) {
         std::cout << "Ошибка выделения памяти" << std::endl;
         return false;
     }
         for ( int i = 0; i < numstrok; i++){
-            temp[i] = new Temperature[numstolb];
+            temp[i] = new T[numstolb];
          if (!temp[i]) {
            std::cout << "Ошибка выделения памяти " << std::endl;
             temp = nullptr;
@@ -257,7 +268,8 @@ Table Table::operator+(const Table& other) { ///peregruzka
   
 	  
 	 
-	  void Table::print()  {
+	  template <typename T>
+	  void Table<T>::print()  {
         for ( int i = 0; i < numstrok; i++) {
             for ( int j = 0; j < numstolb; j++) {
                 temp[i][j].print();
@@ -266,3 +278,5 @@ Table Table::operator+(const Table& other) { ///peregruzka
             std::cout << std::endl;
         }
     }
+
+template class Table<Temperature>;
