@@ -5,7 +5,7 @@ int main ()
 { 
 
 int com=-1;
-Table t1,t2,t3;
+Table<Temperature> t1,t2,t3;
  if (!t1.readFromFile("input1.txt") || !t2.readFromFile("input2.txt")) {
         exit(1);
     }
@@ -55,7 +55,7 @@ while(com!=0)
 	 
 		 case 4:{
 		 t3=t1+t2;
-		 Table summa(t3);
+		 Table<Temperature> summa(t3);
 		 std::cout<<"Результат суммы двух таблиц : "<<std::endl;
 		 t3.print();
 		 break;
