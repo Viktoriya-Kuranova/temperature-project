@@ -1,6 +1,7 @@
 #include "table.h"
 #include <iostream>
 #include <fstream>
+#include <regex>
 
 		template <typename T>
 		Table<T>::Table( int n,  int k) : numstrok(n), numstolb(k), temp(nullptr)
@@ -192,7 +193,9 @@ Table<T> Table<T>::operator+(const Table<T>& other) { ///peregruzka
         std::cout << "Ошибка не удалось прочитать размеры таблицы"<<std::endl;
         return false;
     }
-        
+
+        fin.ignore(10000, '\n');
+
         if (tnumstrok <= 0 || tnumstolb <= 0) {
         std::cout << "Ошибка неверные размеры таблицы" << std::endl;
         return false;
@@ -222,23 +225,24 @@ Table<T> Table<T>::operator+(const Table<T>& other) { ///peregruzka
     
     }
    } 
+    std::regex re(R"(^\s*(-?\d+(\.\d+)?)\s+([CKF])\s*$)");
     for (int i = 0; i < numstrok; i++) {
         for (int j = 0; j < numstolb; j++) {
-            double val;
-            char sc;
+            std::string line;
+            std::smatch m;
 
-            if (!(fin >> val >> sc)) {
-                if (fin.eof()) {
-                    std::cout << "Ошибка в файле меньше данных чем указано размерами таблицы!" << std::endl;
-                } else {
-                    std::cout << "Ошибка неверный формат данных в ячейке" << std::endl;
-                }
+            if (!std::getline(fin, line)) {
+                std::cout << "Ошибка в файле меньше данных чем указано размерами таблицы!" << std::endl;
                 return false;
             }
-            if (sc != 'C' && sc != 'K' && sc != 'F') {
-                std::cout << "Ошибка неизвестная шкала " << std::endl;
+
+            if (!std::regex_match(line, m, re)) {
+                std::cout << "Ошибка неверный формат данных в ячейке: " << line << std::endl;
                 return false;
             }
+
+            double val = std::stod(m[1].str());
+            char sc = m[3].str()[0];
 
             if (sc == 'K' && val <= 0) {
                 std::cout << "Ошибка температура не имеет физического смысла" << std::endl;
@@ -255,9 +259,8 @@ Table<T> Table<T>::operator+(const Table<T>& other) { ///peregruzka
             temp[i][j].set(val, sc);
         }
     }
-      double dopval;
-       char   dopsc;
-        if (fin >> dopval >> dopsc) {
+      std::string dopline;
+        if (std::getline(fin, dopline)) {
     std::cout << "Ошибка в файле больше данных чем указано размерами таблицы!" << std::endl;
     return false;
 }
