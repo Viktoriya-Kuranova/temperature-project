@@ -1,11 +1,12 @@
 #include "temperature.h"
+#include <vector>
 
 	template <typename T>
 	class Table {
 		
 		 int numstrok;
 		 int numstolb;
-		T** temp;
+		std::vector<std::vector<T>> temp;
 		
 		public:
 		Table( int n = 0,  int k =0);
@@ -15,7 +16,7 @@
 		bool min_in_strok( int strok, double* minimum);
   bool maxtable(double* maximum);
 Table<T> operator+(const Table<T>& other);
-		~Table();
+		~Table()= default;
 		 bool readFromFile(const std::string& filename);
 	  void print();
     
