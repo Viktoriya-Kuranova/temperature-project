@@ -1,3 +1,5 @@
+//подключено к IDE
+
 #include "table.h"
 #include <iostream>
 #include <fstream>
